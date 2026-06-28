@@ -1,5 +1,8 @@
 /* ==========================================================
    Light Snake — neon UV graffiti, Chance IT Studio brand
+   Mobile-first fullscreen. Header strip is the only chrome;
+   the play area fills the rest. Cross D-pad is overlaid and
+   only appears on touch / small screens.
    ========================================================== */
 :root{
   --bg:#08080a; --panel:#101316; --well:#0b0e10;
@@ -13,49 +16,38 @@
 *,*::before,*::after{box-sizing:border-box;}
 html,body{height:100%;}
 body{
-  margin:0; color:var(--ink);
-  font-family:var(--font-mono);
-  background:radial-gradient(70% 50% at 50% 0%, rgba(0,255,157,0.06), transparent 60%), var(--bg);
-  display:grid; place-items:center; overflow:hidden;
+  margin:0; color:var(--ink); font-family:var(--font-mono);
+  background:var(--bg);
+  display:grid; grid-template-rows:auto 1fr;   /* header strip + play area */
+  height:100dvh; overflow:hidden;
   -webkit-font-smoothing:antialiased;
-  user-select:none; -webkit-user-select:none;
-}
-.wrap{
-  display:flex; flex-direction:column; align-items:center;
-  gap:12px; padding:12px; width:100%;
+  user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;
 }
 
-/* HUD */
-.hud{
-  width:min(92vmin,560px);
-  display:flex; align-items:center; justify-content:space-between; gap:14px;
+/* ---- header strip (the only non-play chrome) ---- */
+.strip{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  height:48px; padding:0 14px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#0d1012,#0a0c0e);
 }
-.hud__brand{
-  font-family:var(--font-stencil); font-size:24px; letter-spacing:0.06em;
-  color:var(--ink);
+.strip__title{
+  font-family:var(--font-stencil); font-size:18px; letter-spacing:0.05em; color:var(--ink);
 }
-.hud__brand span{ color:var(--green); }
-.hud__stats{ display:flex; gap:10px; }
-.stat{
-  background:var(--well); border:1px solid var(--line); border-radius:9px;
-  padding:5px 12px; min-width:70px; text-align:right;
-}
-.stat__k{ display:block; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-dim); }
-.stat__v{ font-weight:700; font-size:20px; color:var(--green); }
+.strip__title span{ color:var(--green); }
+.strip__stats{ display:flex; gap:14px; }
+.stat{ display:flex; align-items:baseline; gap:6px; }
+.stat__k{ font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-dim); }
+.stat__v{ font-weight:700; font-size:18px; color:var(--green); font-variant-numeric:tabular-nums; min-width:18px; text-align:right; }
 
-/* Stage — responsive square */
-.stage{
-  position:relative;
-  width:min(92vmin,560px); height:min(92vmin,560px);
-  border-radius:12px; overflow:hidden;
-  box-shadow:0 0 0 1px var(--line), 0 24px 60px -30px rgba(0,255,157,0.35);
-}
-canvas{ width:100%; height:100%; display:block; image-rendering:auto; }
+/* ---- play area fills the rest ---- */
+.stage{ position:relative; width:100%; height:100%; overflow:hidden; }
+canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
 
-/* Overlays */
+/* ---- overlays ---- */
 .overlay{
   position:absolute; inset:0; display:grid; place-items:center;
-  background:rgba(6,8,10,0.62); backdrop-filter:blur(4px); padding:18px;
+  background:rgba(6,8,10,0.6); backdrop-filter:blur(4px); padding:18px; z-index:3;
 }
 .overlay .card{
   max-width:420px; text-align:center;
@@ -63,12 +55,11 @@ canvas{ width:100%; height:100%; display:block; image-rendering:auto; }
   border:1px solid var(--line); border-radius:14px;
   padding:22px 24px; box-shadow:0 20px 50px -24px rgba(0,0,0,0.9);
 }
-.eyebrow{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.26em; text-transform:uppercase; color:var(--green); }
+.eyebrow{ font-size:10px; letter-spacing:0.26em; text-transform:uppercase; color:var(--green); }
 .title{
   font-family:var(--font-stencil); font-weight:400;
-  font-size:clamp(34px,8vmin,52px); letter-spacing:0.04em; margin:6px 0 10px;
-  color:var(--ink);
-  text-shadow:0 0 22px rgba(0,255,157,0.45);
+  font-size:clamp(32px,8vmin,50px); letter-spacing:0.04em; margin:6px 0 10px;
+  color:var(--ink); text-shadow:0 0 22px rgba(0,255,157,0.45);
 }
 .title.ko{ color:var(--orange); text-shadow:0 0 24px rgba(255,45,79,0.5); }
 .lead{ color:var(--ink-dim); line-height:1.5; margin:6px 0; }
@@ -80,28 +71,43 @@ canvas{ width:100%; height:100%; display:block; image-rendering:auto; }
   color:var(--ink); background:var(--well);
 }
 .best-flag{
-  display:inline-block; font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em;
-  color:var(--bg); background:var(--green); padding:3px 9px; border-radius:99px; margin-bottom:8px;
+  display:inline-block; font-size:10px; letter-spacing:0.2em; color:var(--bg);
+  background:var(--green); padding:3px 9px; border-radius:99px; margin-bottom:8px;
 }
 
-/* D-pad */
-.dpad{ display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:2px; }
-.dpad__row{ display:flex; gap:8px; }
-.arrow{
-  width:54px; height:54px; font-size:20px; line-height:1;
-  color:var(--green); background:var(--well);
-  border:1px solid var(--line); border-radius:12px;
-  box-shadow:0 0 14px -4px rgba(0,255,157,0.5);
-  cursor:pointer; transition:transform .08s, background .12s, color .12s;
-}
-.arrow:hover{ color:var(--bg); background:var(--green); }
-.arrow:active{ transform:scale(0.94); }
+/* device-aware hint: desktop text vs mobile text */
+.hint--mobile{ display:none; }
+.hint--desktop{ display:inline; }
 
-/* hide d-pad on precise pointers with room — keyboard is primary on desktop */
-@media (hover:hover) and (pointer:fine) and (min-width:760px){
-  .dpad{ opacity:0.5; }
-  .dpad:hover{ opacity:1; }
+/* ---- ghost cross D-pad (overlaid, mobile only) ---- */
+.dpad{
+  position:absolute; left:50%; bottom:max(18px, env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  display:none;                       /* hidden by default (desktop) */
+  grid-template-columns:repeat(3, 58px);
+  grid-template-rows:repeat(3, 58px);
+  gap:6px; z-index:2; opacity:0.55;
+}
+.pad{
+  display:grid; place-items:center;
+  color:var(--green); font-size:20px; line-height:1;
+  background:rgba(0,255,157,0.10);
+  border:1px solid rgba(0,255,157,0.32); border-radius:14px;
+  backdrop-filter:blur(3px);
+  box-shadow:0 0 16px -6px rgba(0,255,157,0.5);
+  cursor:pointer; touch-action:none;
+  transition:background .1s, transform .06s;
+}
+.pad:active{ background:rgba(0,255,157,0.85); color:var(--bg); transform:scale(0.94); }
+.pad--up{ grid-area:1/2; } .pad--left{ grid-area:2/1; }
+.pad--right{ grid-area:2/3; } .pad--down{ grid-area:3/2; }
+
+/* show the D-pad + swap the hint only when the screen indicates touch/small */
+@media (pointer:coarse), (max-width:760px){
+  .dpad{ display:grid; }
+  .hint--desktop{ display:none; }
+  .hint--mobile{ display:inline; }
 }
 @media (prefers-reduced-motion:reduce){
-  .arrow{ transition:none; }
+  .pad{ transition:none; }
 }

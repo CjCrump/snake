@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Light Snake · Chance IT Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -10,29 +10,29 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="wrap">
-    <header class="hud">
-      <div class="hud__brand">LIGHT <span>SNAKE</span></div>
-      <div class="hud__stats">
-        <div class="stat"><span class="stat__k">Orbs</span><span class="stat__v" id="score">0</span></div>
-        <div class="stat"><span class="stat__k">Best</span><span class="stat__v" id="best">0</span></div>
-      </div>
-    </header>
+  <!-- the only non-play chrome: a small header strip -->
+  <header class="strip">
+    <div class="strip__title">LIGHT&nbsp;<span>SNAKE</span></div>
+    <div class="strip__stats">
+      <div class="stat"><span class="stat__k">Orbs</span><span class="stat__v" id="score">0</span></div>
+      <div class="stat"><span class="stat__k">Best</span><span class="stat__v" id="best">0</span></div>
+    </div>
+  </header>
 
-    <div class="stage">
-      <canvas id="game"></canvas>
-      <div id="overlay" class="overlay"></div>
+  <!-- play area fills everything else -->
+  <main class="stage" id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- ghost cross D-pad — overlaid, mobile/touch only (CSS-gated) -->
+    <div class="dpad" id="dpad" aria-label="Direction pad">
+      <button class="pad pad--up"    data-dir="UP"    aria-label="Up">&#9650;</button>
+      <button class="pad pad--left"  data-dir="LEFT"  aria-label="Left">&#9664;</button>
+      <button class="pad pad--right" data-dir="RIGHT" aria-label="Right">&#9654;</button>
+      <button class="pad pad--down"  data-dir="DOWN"  aria-label="Down">&#9660;</button>
     </div>
 
-    <div class="dpad" aria-label="Controls">
-      <button class="arrow" data-dir="UP" aria-label="Up">&#9650;</button>
-      <div class="dpad__row">
-        <button class="arrow" data-dir="LEFT" aria-label="Left">&#9664;</button>
-        <button class="arrow" data-dir="DOWN" aria-label="Down">&#9660;</button>
-        <button class="arrow" data-dir="RIGHT" aria-label="Right">&#9654;</button>
-      </div>
-    </div>
-  </div>
+    <div id="overlay" class="overlay"></div>
+  </main>
 
   <script src="hub-bridge.js" defer></script>
   <script src="app.js" defer></script>
